@@ -1,0 +1,7 @@
+# Google Nano Banana Thumbnail Prompt (16:9)
+
+Prompt to paste into Google Nano Banana (https://gemini.google/overview/image-generation/):
+
+```
+A high-impact, cinematic 16:9 YouTube tech thumbnail. On the left side, an intense close-up of a software engineer wearing headphones staring at glowing dual monitors in a dark room with subtle red alarm ambient lighting, looking amazed. On the right side, a high-contrast split terminal screen: the top half is glowing red with the text "WITHOUT MEMORY: 45 MIN OUTAGE ❌", and the bottom half is glowing vibrant emerald green with the text "WITH HINDSIGHT: 90 SEC FIX ⚡ [INC-412 RECALLED]". In the center, a glowing holographic 3D neon brain network connecting the logs to the solution. Bold, clean text overlay in white and cyan font: "AI AGENTS THAT REMEMBER". Professional developer aesthetic, ultra-sharp 4K, dark cyberpunk SRE theme.
+```

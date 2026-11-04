@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IncidentMind — Autonomous SRE Agent with Hindsight Memory</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Header Bar -->
+  <header class="header">
+    <div class="brand">
+      <div class="logo-icon">🧠</div>
+      <div>
+        <h1 class="brand-title">IncidentMind</h1>
+        <p class="brand-subtitle">Autonomous SRE Incident Memory Engine</p>
+      </div>
+    </div>
+
+    <div class="header-badges">
+      <div class="badge-item">
+        <span class="badge-label">Memory Engine</span>
+        <span class="badge-pill active" id="memoryEngineBadge">Hindsight (Vectorize)</span>
+      </div>
+      <div class="badge-item">
+        <span class="badge-label">Bank ID</span>
+        <span class="badge-pill mono" id="bankIdBadge">incidentmind-sre-cluster</span>
+      </div>
+      <div class="badge-item">
+        <span class="badge-label">Retained Incidents</span>
+        <span class="badge-pill count" id="retainedCountBadge">3</span>
+      </div>
+      <button class="btn-sm btn-ghost" id="openRetainModalBtn">+ Retain Post-Mortem</button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-layout">
+
+    <!-- Left Column: Triage & Agent Execution -->
+    <section class="pane left-pane">
+      <div class="pane-header">
+        <div class="pane-title">
+          <span class="icon">🚨</span>
+          <h2>Live Incident Triage Console</h2>
+        </div>
+        <div class="memory-toggle-container">
+          <span class="toggle-label" id="toggleLabel">Hindsight Memory</span>
+          <label class="switch">
+            <input type="checkbox" id="memoryToggle" checked>
+            <span class="slider round"></span>
+          </label>
+          <span class="status-indicator on" id="toggleStatus">ACTIVE</span>
+        </div>
+      </div>
+
+      <!-- Quick Preset Scenarios -->
+      <div class="preset-section">
+        <span class="section-label">Simulate Production Incident Alert:</span>
+        <div class="preset-buttons">
+          <button class="preset-btn active" data-scenario="kafka_db_starvation">
+            <span class="preset-tag p1">P1</span>
+            <span class="preset-name">Kafka DB Pool Starvation</span>
+          </button>
+          <button class="preset-btn" data-scenario="redis_oom_spike">
+            <span class="preset-tag p2">P2</span>
+            <span class="preset-name">Redis OOM Session Leak</span>
+          </button>
+          <button class="preset-btn" data-scenario="k8s_canary_502">
+            <span class="preset-tag p1">P1</span>
+            <span class="preset-name">K8s Ingress 502 Canary</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Raw Alert Editor -->
+      <div class="input-card">
+        <div class="input-card-header">
+          <label for="alertInput">Incoming Alert Telemetry & Logs</label>
+          <span class="mono-label">P99 LATENCY SPIKE</span>
+        </div>
+        <textarea id="alertInput" rows="6" placeholder="Paste alert logs, stacktraces, or metric alarms here..."></textarea>
+      </div>
+
+      <!-- Action Row -->
+      <div class="action-row">
+        <button class="btn btn-primary" id="runTriageBtn">
+          <span class="btn-icon">⚡</span> Run SRE Triage
+        </button>
+        <button class="btn btn-secondary" id="compareModeBtn">
+          <span class="btn-icon">⚖️</span> Side-by-Side Compare (Memory vs Stateless)
+        </button>
+      </div>
+
+      <!-- Agent Output / Diagnosis Area -->
+      <div class="output-card" id="outputCard">
+        <div class="output-header">
+          <div class="output-title">
+            <span class="pulse-dot"></span>
+            <h3>SRE Agent Triage Diagnosis</h3>
+          </div>
+          <div class="output-meta" id="outputMeta">
+            <span class="meta-tag" id="metaMode">Mode: Hindsight ON</span>
+            <span class="meta-tag" id="metaModel">Model: Groq / SRE Core</span>
+          </div>
+        </div>
+
+        <div class="output-body" id="outputBody">
+          <div class="placeholder-state">
+            <p>Select a production scenario above and click <strong>"Run SRE Triage"</strong> to diagnose the alert.</p>
+            <p class="subtext">Toggle <em>Hindsight Memory</em> OFF to see how a stateless LLM fails with generic advice, then turn it ON to watch Hindsight recall the exact root cause and runbook.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison Container (Hidden by default) -->
+      <div class="comparison-container hidden" id="comparisonContainer">
+        <div class="comparison-header">
+          <h3>⚡ Side-by-Side Memory Impact Comparison</h3>
+          <button class="btn-sm btn-ghost" id="closeCompareBtn">✕ Close</button>
+        </div>
+        <div class="comparison-grid">
+          <div class="compare-card stateless">
+            <div class="card-tag">WITHOUT MEMORY (Stateless LLM)</div>
+            <div class="card-content" id="statelessContent">Loading...</div>
+          </div>
+          <div class="compare-card hindsight">
+            <div class="card-tag">WITH HINDSIGHT AGENT MEMORY</div>
+            <div class="card-content" id="hindsightContent">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Hindsight Memory Stream & Bank Inspector -->
+    <aside class="pane right-pane">
+      <div class="pane-header">
+        <div class="pane-title">
+          <span class="icon">🔬</span>
+          <h2>Hindsight Memory Stream</h2>
+        </div>
+        <button class="btn-sm btn-ghost" id="refreshStatsBtn">↻ Refresh</button>
+      </div>
+
+      <!-- Live Memory Activity Log -->
+      <div class="memory-stream-card">
+        <div class="stream-header">
+          <span class="section-label">Real-Time Memory Activity:</span>
+          <span class="live-pulse">LIVE</span>
+        </div>
+        <div class="stream-log" id="streamLog">
+          <!-- Live events inserted dynamically -->
+        </div>
+      </div>
+
+      <!-- Retained Post-Mortems in Bank -->
+      <div class="bank-inspect-card">
+        <div class="inspect-header">
+          <span class="section-label">Retained Incident Knowledge Units:</span>
+        </div>
+        <div class="knowledge-cards" id="knowledgeCards">
+          <!-- Populated from server -->
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Modal for Retaining New Incident Post-Mortem -->
+  <div class="modal-overlay hidden" id="retainModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>+ Retain Incident Post-Mortem into Hindsight</h3>
+        <button class="btn-sm btn-ghost" id="closeModalBtn">✕</button>
+      </div>
+      <form id="retainForm" class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Incident ID</label>
+            <input type="text" id="incId" placeholder="e.g. INC-604" required>
+          </div>
+          <div class="form-group">
+            <label>Service Name</label>
+            <input type="text" id="incService" placeholder="e.g. payment-worker-prod" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="incTitle" placeholder="e.g. Memory leak during large CSV exports" required>
+        </div>
+        <div class="form-group">
+          <label>Symptoms & Telemetry</label>
+          <textarea id="incSymptoms" rows="2" placeholder="Describe error logs, memory spike metrics..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Root Cause</label>
+          <textarea id="incRootCause" rows="2" placeholder="Why did this fail? (e.g. unbuffered pandas read)" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Verified Resolution Runbook</label>
+          <textarea id="incRunbook" rows="3" placeholder="Command line fix or config changes..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Tags (comma-separated)</label>
+          <input type="text" id="incTags" placeholder="e.g. python, memory, export, payments">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="cancelModalBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Retain into Bank</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
