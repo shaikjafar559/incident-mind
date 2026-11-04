@@ -1,11 +1,13 @@
-Most AI agents in production suffer from severe anterograde amnesia.
+AI agents in production suffer from amnesia.
 Every time an alert fires at 3 AM, they treat your stack like Day 1.
 
-We wired an SRE triage agent to Hindsight agent memory. Here is what changed:
+We wired an SRE triage agent to Hindsight agent memory. The results:
 
 • Before: An outage hits PostgreSQL with pool exhaustion. The agent gives generic advice: "restart the pod" or "check CPU." MTTR: 45+ minutes.
-• After: The agent queries Hindsight memory, recalls Incident #412 from 3 weeks ago, matches the Kafka batch spike signature, and outputs the exact pg_terminate SQL command. MTTR: 90 seconds.
+• After: The agent queries Hindsight memory, recalls Incident #412 from 3 weeks ago, matches the Kafka batch spike, and outputs the exact pg_terminate SQL command. MTTR: 90 seconds.
 
-Simple vector RAG failed here because error logs are full of syntax noise. Hindsight’s multi-signal recall (BM25 + graph + temporal) actually understood past post-mortems.
+Vector RAG failed on log syntax noise. Hindsight’s multi-signal recall (BM25 + graph + temporal) actually understood past post-mortems.
+
+Repo: https://github.com/shaikjafar559/incident-mind
 
 #AIAgents #AgentMemory #Hindsight #AIMemory #LLM

@@ -66,7 +66,7 @@ Instead of treating every incident as day zero:
 ### 1. Clone & Install Dependencies
 
 ```bash
-git clone https://github.com/your-username/incident-mind.git
+git clone https://github.com/shaikjafar559/incident-mind.git
 cd incident-mind
 pip install -r requirements.txt
 ```
