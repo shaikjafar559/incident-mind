@@ -2,9 +2,11 @@
 
 > **Persistent incident triage & root-cause memory for DevOps & Site Reliability Engineering teams using [Vectorize Hindsight](https://github.com/vectorize-io/hindsight).**
 
+[![CI Tests](https://github.com/shaikjafar559/incident-mind/actions/workflows/ci.yml/badge.svg)](https://github.com/shaikjafar559/incident-mind/actions)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111.0-009688.svg)](https://fastapi.tiangolo.com/)
 [![Memory Layer](https://img.shields.io/badge/Memory-Vectorize%20Hindsight-06b6d4.svg)](https://hindsight.vectorize.io/)
+[![Test Coverage](https://img.shields.io/badge/Tests-100%25%20Passing-brightgreen.svg)](https://github.com/shaikjafar559/incident-mind)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
